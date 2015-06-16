@@ -13,7 +13,7 @@
         'warpTemplate': '<div class=\"u-pn fl\">' +
         '<span class=\"pn-on\">' +
         '<i></i><em class="ico-login i-pn-jt"></em></span>' +
-        '<div class=\"pn-more\"></div></div>'
+        '<div class=\"pn-more\" style="display: none;"></div></div>'
     };
 
     var Combobox = function (element, options) {
@@ -44,6 +44,7 @@
         var initData = [];
         //初始选中文字
         var initText = $("option:selected", this.el).text();
+        this.setText(initText);
         $("option", this.el).each(function () {
             initData.push({
                 'value': $(this).val(),
@@ -99,12 +100,12 @@
         if (this.disabled) {
             return false;
         }
-        // 先尝试关闭已展开的下拉框
+
         var opts = this.options;
         var itemHolder = $(opts.itemHolder, this.target);
 
-        $('body').data('combobox-opened', this);
-        this.target.addClass(opts.activeClass);
+        $('body').data('combobox-opened', null);
+        this.target.removeClass(opts.activeClass);
         itemHolder.hide();
         this.el.trigger('close.combobox', [this.target, this]);
         return true;
@@ -120,12 +121,14 @@
         }
         var opts = this.options;
         var itemHolder = $(opts.itemHolder, this.target);
+
+        // 先尝试关闭已展开的下拉框
         var current = $('body').data('combobox-opened');
         if (current) {
             current.close();
         }
-        $('body').data('combobox-opened', null);
-        this.target.removeClass(opts.activeClass);
+        $('body').data('combobox-opened', this);
+        this.target.addClass(opts.activeClass);
         itemHolder.show();
         this.el.trigger('show.combobox', [this.target, this]);
         return true;
@@ -176,6 +179,20 @@
         this.el
             .html(options)
             .trigger('set.combobox', [this.target, this]);
+
+        //重新渲染选项后设置下拉框显示文字
+        var text = this.el.find('option:selected').html();
+        this.setText(text);
+        //重新设置下拉框value
+        this.target.data('value',this.el.val());
+    };
+
+    /**
+     * 设置下拉框显示文字
+     * @param text
+     */
+    Combobox.prototype.setText = function(text){
+        $(this.options.textHolder,this.target).text(text);
     };
 
     $.fn.combobox = function (options) {
