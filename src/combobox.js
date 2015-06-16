@@ -10,6 +10,7 @@
         'item': '.pn-more p',
         'itemHolder': '.pn-more',
         'disabled':false,
+        'visibleNumber':6,
         'itemTemplate': '<p data-value="{{value}}">{{text}}</p>',
         'warpTemplate': '<div class=\"u-pn fl\">' +
         '<span class=\"pn-on\">' +
@@ -206,6 +207,24 @@
         this.setText(text);
         //重新设置下拉框value
         this.target.data('value', this.el.val());
+
+        this.updateHeight();
+    };
+
+    /**
+     * 根据配置的可见选项数量改变下拉内容的高度，在重新渲染选项后调用
+     */
+    Combobox.prototype.updateHeight = function(){
+        var itemHolder = $(this.options.itemHolder,this.target);
+        var item = $(this.options.item,this.target);
+        var num = this.options.visibleNumber;
+        var perHeight = item.height();
+        if(num <= item.length){
+            itemHolder.height(num * perHeight);
+        }else{
+            itemHolder.height(item.length * perHeight);
+        }
+
     };
 
     /**
