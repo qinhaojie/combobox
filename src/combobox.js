@@ -10,7 +10,7 @@
         'item': '.pn-more p',
         'itemHolder': '.pn-more',
         'disabled':false,
-        'itemTemplate': '<p data-value="{{value}}"><a href="javascript:void(0);">{{text}}</a></p>',
+        'itemTemplate': '<p data-value="{{value}}">{{text}}</p>',
         'warpTemplate': '<div class=\"u-pn fl\">' +
         '<span class=\"pn-on\">' +
         '<i></i><em class="ico-login i-pn-jt"></em></span>' +
@@ -167,12 +167,10 @@
         var text = item.text();
         var value = item.data('value');
         var opts = this.options;
-        this.target
-            .data('value', value)
-            .find(opts.textHolder).text(text);
+        
         this.el
             .val(value)
-            .trigger('change.combobox', [this.target, this]);
+            .trigger('change', [this.target, this]);
 
         this.close();
         return false;
